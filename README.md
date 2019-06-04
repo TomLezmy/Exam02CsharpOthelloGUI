@@ -1,1 +1,1 @@
-# Exam02CsharpOthelloGUI
+# Exam05CsharpOthelloGUI
