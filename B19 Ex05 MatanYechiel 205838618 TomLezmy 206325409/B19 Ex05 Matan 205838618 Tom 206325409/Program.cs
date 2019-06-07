@@ -2,12 +2,17 @@
 
 namespace Ex05_Othello
 {
-    class Program
+    internal class Program
     {
         public static void Main()
         {
-            GameForm gameForm = new GameForm();
-            gameForm.ShowDialog();
+            OptionForm optionForm = new OptionForm();
+            optionForm.ShowDialog();
+            if (!optionForm.ClosedByX)
+            {
+                GameForm gameForm = new GameForm(optionForm.BoardSize, optionForm.VsComputer);
+                gameForm.ShowDialog();
+            }
         }
     }
 }

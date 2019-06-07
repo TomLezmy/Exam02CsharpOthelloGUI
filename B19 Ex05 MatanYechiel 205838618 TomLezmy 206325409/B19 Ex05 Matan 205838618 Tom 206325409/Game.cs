@@ -4,8 +4,10 @@ using System.Text.RegularExpressions;
 
 namespace Ex05_Othello
 {
-    class Game
+    internal class Game
     {
+        private int m_FirstUserWins = 0;
+        private int m_SecondUserWins = 0;
         private int m_FirstUserScore;
         private int m_SecondUserScore;
         private int m_BoardSize;
@@ -21,13 +23,21 @@ namespace Ex05_Othello
         public int FirstUserScore
         {
             get { return m_FirstUserScore; }
-            set { m_FirstUserScore = value; }
         }
 
         public int SecondUserScore
         {
             get { return m_SecondUserScore; }
-            set { m_SecondUserScore = value; }
+        }
+
+        public int FirstUserWins
+        {
+            get { return m_FirstUserWins; }
+        }
+
+        public int SecondUserWins
+        {
+            get { return m_SecondUserWins; }
         }
 
         public int BoardSize
@@ -39,7 +49,6 @@ namespace Ex05_Othello
         public List<string> PossibleMoves
         {
             get { return m_PossibleMoves; }
-            set { m_PossibleMoves = value; }
         }
 
         public bool IsTwoPlayer
@@ -56,25 +65,12 @@ namespace Ex05_Othello
         public int PlayerTurn
         {
             get { return m_PlayerTurn; }
-            set { m_PlayerTurn = value; }
         }
 
         public bool GameOver
         {
             get { return m_GameOver; }
             set { m_GameOver = value; }
-        }
-
-        public bool AvailableMoveFirstPlayer
-        {
-            get { return m_IsAvailableMoveFirstPlayer; }
-            set { m_IsAvailableMoveSecondPlayer = value; }
-        }
-
-        public bool AvailableMoveSecondPlayer
-        {
-            get { return m_IsAvailableMoveFirstPlayer; }
-            set { m_IsAvailableMoveSecondPlayer = value; }
         }
 
         ////Initialize Board
@@ -95,54 +91,7 @@ namespace Ex05_Othello
             m_IsAvailableMoveSecondPlayer = true;
             CalculateMoves();
         }
-
-        ////Check input validation and set IsTwoPlayer
-        public bool SetIsTwoPlayer(string i_Choise)
-        {
-            bool isValidInput = true;
-
-            if (i_Choise != "p" && i_Choise != "c")
-            {
-                isValidInput = false;
-            }
-            else
-            {
-                if (i_Choise.Equals("p"))
-                {
-                    m_IsTwoPlayer = true;
-                }
-                else
-                {
-                    m_IsTwoPlayer = false;
-                }
-            }
-
-            return isValidInput;
-        }
-
-        ////Check input validation and set BoardSize
-        public bool SetBoardSize(string i_Choise)
-        {
-            bool isValidInput = true;
-
-            if (i_Choise != "6" && i_Choise != "8")
-            {
-                isValidInput = false;
-            }
-            else
-            {
-                m_BoardSize = int.Parse(i_Choise);
-            }
-
-            return isValidInput;
-        }
-
-        ////Check if player wants to play again
-        public bool IsPlayAgain(string i_Choise)
-        {
-            return i_Choise.Equals("y");
-        }
-
+        
         ////Returns true if there are moves available for the current player
         public bool CheckAvailableMoves()
         {
@@ -165,7 +114,7 @@ namespace Ex05_Othello
             int rowIndex, colIndex;
             CalculateMoves();
 
-            if (IsComputerTurn())
+            if (isComputerTurn())
             {
                 i_Move = computerBestChoiseAI();
                 System.Threading.Thread.Sleep(1000);
@@ -227,32 +176,16 @@ namespace Ex05_Othello
             return bestMoves[randomIndex];
         }
 
-        ////Checks if the Player wants to exit 
-        ////If returns true, game is over
-        public void CheckIfUserWantToExit(string i_Choise)
-        {
-            if (i_Choise.Equals("Q"))
-            {
-                m_GameOver = true;
-            }
-        }
-
         ////Checks if there are no more moves for both players
         ////If returns true, game is over
-        public void CheckIfNoAvailableMovesForBothPlayers()
+        private void checkIfNoAvailableMovesForBothPlayers()
         {
             if (!m_IsAvailableMoveFirstPlayer && !m_IsAvailableMoveSecondPlayer)
             {
                 GameOver = true;
             }
         }
-
-        ////Returns true if only one of the players has no available move
-        public bool IsNoAvailableMovesForOnePlayer()
-        {
-            return (!m_IsAvailableMoveFirstPlayer || !m_IsAvailableMoveSecondPlayer) && GameOver == false;
-        }
-
+        
         ////Check if First Player won
         public bool IsFirstPlayerWon()
         {
@@ -264,13 +197,7 @@ namespace Ex05_Othello
         {
             return m_FirstUserScore < m_SecondUserScore;
         }
-
-        ////Checks if the exit button is selected
-        public bool IsUserWantToExit(string i_Choise)
-        {
-            return i_Choise.Equals("Q");
-        }
-
+        
         ////Handle a situation where there are no available moves
         ////If the borad is full, game is over
         ////else, set m_IsAvailableMove for relevant player to false
@@ -290,11 +217,13 @@ namespace Ex05_Othello
                 {
                     m_IsAvailableMoveSecondPlayer = false;
                 }
+
+                checkIfNoAvailableMovesForBothPlayers();
             }
         }
 
         ////Returns true if it's computer turn to play
-        public bool IsComputerTurn()
+        private bool isComputerTurn()
         {
             return !IsTwoPlayer && PlayerTurn == 1;
         }
@@ -340,6 +269,20 @@ namespace Ex05_Othello
                         }
                     }
                 }
+            }
+        }
+
+        //// Checks which player won and updates the win counter
+        public void FinishGame()
+        {
+            if (IsFirstPlayerWon())
+            {
+                m_FirstUserWins++;
+            }
+
+            if(IsSecondPlayerWon())
+            {
+                m_SecondUserWins++;
             }
         }
 
@@ -545,91 +488,123 @@ namespace Ex05_Othello
             switch (i_Direction)
             {
                 case "Right":
-                    while (m_Board[i_Row, i_Col + 1] != m_PlayerTurn + 1)
-                    {
-                        m_Board[i_Row, i_Col + 1] = m_PlayerTurn + 1;
-                        i_Col++;
-                        io_AddPlayerScore++;
-                        io_DecPlayerScore--;
-                    }
-
+                    updateRight(i_Row, i_Col, ref io_AddPlayerScore, ref io_DecPlayerScore);
                     break;
                 case "Left":
-                    while (m_Board[i_Row, i_Col - 1] != m_PlayerTurn + 1)
-                    {
-                        m_Board[i_Row, i_Col - 1] = m_PlayerTurn + 1;
-                        i_Col--;
-                        io_AddPlayerScore++;
-                        io_DecPlayerScore--;
-                    }
-
+                    updateLeft(i_Row, i_Col, ref io_AddPlayerScore, ref io_DecPlayerScore);
                     break;
                 case "Up":
-                    while (m_Board[i_Row + 1, i_Col] != m_PlayerTurn + 1)
-                    {
-                        m_Board[i_Row + 1, i_Col] = m_PlayerTurn + 1;
-                        i_Row++;
-                        io_AddPlayerScore++;
-                        io_DecPlayerScore--;
-                    }
-
+                    updateUp(i_Row, i_Col, ref io_AddPlayerScore, ref io_DecPlayerScore);
                     break;
-                case "Down":
-                    while (m_Board[i_Row - 1, i_Col] != m_PlayerTurn + 1)
-                    {
-                        m_Board[i_Row - 1, i_Col] = m_PlayerTurn + 1;
-                        i_Row--;
-                        io_AddPlayerScore++;
-                        io_DecPlayerScore--;
-                    }
-
+                case "Down":       
+                    updateDown(i_Row, i_Col, ref io_AddPlayerScore, ref io_DecPlayerScore);
                     break;
-                case "UpRight":
-                    while (m_Board[i_Row - 1, i_Col + 1] != m_PlayerTurn + 1)
-                    {
-                        m_Board[i_Row - 1, i_Col + 1] = m_PlayerTurn + 1;
-                        i_Row--;
-                        i_Col++;
-                        io_AddPlayerScore++;
-                        io_DecPlayerScore--;
-                    }
-
+                case "UpRight":       
+                    updateUpRight(i_Row, i_Col, ref io_AddPlayerScore, ref io_DecPlayerScore);
                     break;
                 case "UpLeft":
-                    while (m_Board[i_Row - 1, i_Col - 1] != m_PlayerTurn + 1)
-                    {
-                        m_Board[i_Row - 1, i_Col - 1] = m_PlayerTurn + 1;
-                        i_Row--;
-                        i_Col--;
-                        io_AddPlayerScore++;
-                        io_DecPlayerScore--;
-                    }
-
+                    updateUpLeft(i_Row, i_Col, ref io_AddPlayerScore, ref io_DecPlayerScore);
                     break;
                 case "DownRight":
-                    while (m_Board[i_Row + 1, i_Col + 1] != m_PlayerTurn + 1)
-                    {
-                        m_Board[i_Row + 1, i_Col + 1] = m_PlayerTurn + 1;
-                        i_Row++;
-                        i_Col++;
-                        io_AddPlayerScore++;
-                        io_DecPlayerScore--;
-                    }
-
+                    updateDownRight(i_Row, i_Col, ref io_AddPlayerScore, ref io_DecPlayerScore);
                     break;
                 case "DownLeft":
-                    while (m_Board[i_Row + 1, i_Col - 1] != m_PlayerTurn + 1)
-                    {
-                        m_Board[i_Row + 1, i_Col - 1] = m_PlayerTurn + 1;
-                        i_Row++;
-                        i_Col--;
-                        io_AddPlayerScore++;
-                        io_DecPlayerScore--;
-                    }
-
+                    updateDownLeft(i_Row, i_Col, ref io_AddPlayerScore, ref io_DecPlayerScore);
                     break;
                 default:
                     break;
+            }
+        }
+
+        private void updateRight(int i_Row, int i_Col, ref int io_AddPlayerScore, ref int io_DecPlayerScore)
+        {
+            while (m_Board[i_Row, i_Col + 1] != m_PlayerTurn + 1)
+            {
+                m_Board[i_Row, i_Col + 1] = m_PlayerTurn + 1;
+                i_Col++;
+                io_AddPlayerScore++;
+                io_DecPlayerScore--;
+            }
+        }
+
+        private void updateLeft(int i_Row, int i_Col, ref int io_AddPlayerScore, ref int io_DecPlayerScore)
+        {
+            while (m_Board[i_Row, i_Col - 1] != m_PlayerTurn + 1)
+            {
+                m_Board[i_Row, i_Col - 1] = m_PlayerTurn + 1;
+                i_Col--;
+                io_AddPlayerScore++;
+                io_DecPlayerScore--;
+            }
+        }
+            
+        private void updateUp(int i_Row, int i_Col, ref int io_AddPlayerScore, ref int io_DecPlayerScore)
+        {
+            while (m_Board[i_Row + 1, i_Col] != m_PlayerTurn + 1)
+            {
+                m_Board[i_Row + 1, i_Col] = m_PlayerTurn + 1;
+                i_Row++;
+                io_AddPlayerScore++;
+                io_DecPlayerScore--;
+            }
+        }
+
+        private void updateDown(int i_Row, int i_Col, ref int io_AddPlayerScore, ref int io_DecPlayerScore)
+        {
+            while (m_Board[i_Row - 1, i_Col] != m_PlayerTurn + 1)
+            {
+                m_Board[i_Row - 1, i_Col] = m_PlayerTurn + 1;
+                i_Row--;
+                io_AddPlayerScore++;
+                io_DecPlayerScore--;
+            }
+        }
+
+        private void updateUpRight(int i_Row, int i_Col, ref int io_AddPlayerScore, ref int io_DecPlayerScore)
+        {
+            while (m_Board[i_Row - 1, i_Col + 1] != m_PlayerTurn + 1)
+            {
+                m_Board[i_Row - 1, i_Col + 1] = m_PlayerTurn + 1;
+                i_Row--;
+                i_Col++;
+                io_AddPlayerScore++;
+                io_DecPlayerScore--;
+            }
+        }
+
+        private void updateUpLeft(int i_Row, int i_Col, ref int io_AddPlayerScore, ref int io_DecPlayerScore)
+        {
+            while (m_Board[i_Row - 1, i_Col - 1] != m_PlayerTurn + 1)
+            {
+                m_Board[i_Row - 1, i_Col - 1] = m_PlayerTurn + 1;
+                i_Row--;
+                i_Col--;
+                io_AddPlayerScore++;
+                io_DecPlayerScore--;
+            }
+        }
+
+        private void updateDownRight(int i_Row, int i_Col, ref int io_AddPlayerScore, ref int io_DecPlayerScore)
+        {
+            while (m_Board[i_Row + 1, i_Col + 1] != m_PlayerTurn + 1)
+            {
+                m_Board[i_Row + 1, i_Col + 1] = m_PlayerTurn + 1;
+                i_Row++;
+                i_Col++;
+                io_AddPlayerScore++;
+                io_DecPlayerScore--;
+            }
+        }
+
+        private void updateDownLeft(int i_Row, int i_Col, ref int io_AddPlayerScore, ref int io_DecPlayerScore)
+        {
+            while (m_Board[i_Row + 1, i_Col - 1] != m_PlayerTurn + 1)
+            {
+                m_Board[i_Row + 1, i_Col - 1] = m_PlayerTurn + 1;
+                i_Row++;
+                i_Col--;
+                io_AddPlayerScore++;
+                io_DecPlayerScore--;
             }
         }
     }
