@@ -8,7 +8,7 @@ namespace Ex05_Othello
         {
             OptionForm optionForm = new OptionForm();
             optionForm.ShowDialog();
-            if (!optionForm.ClosedByX)
+            if (optionForm.DialogResult == System.Windows.Forms.DialogResult.OK)
             {
                 GameForm gameForm = new GameForm(optionForm.BoardSize, optionForm.VsComputer);
                 gameForm.ShowDialog();

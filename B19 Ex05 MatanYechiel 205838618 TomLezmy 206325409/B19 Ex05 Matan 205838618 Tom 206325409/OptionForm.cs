@@ -10,7 +10,6 @@ namespace Ex05_Othello
         private Button m_TwoPlayerBtn;
         private int m_ChosenBoardSize;
         private bool m_IsVsComputer;
-        private bool m_ClosedByX;
 
         public bool VsComputer
         {
@@ -19,15 +18,7 @@ namespace Ex05_Othello
                 return m_IsVsComputer;
             }
         }
-
-        public bool ClosedByX
-        {
-            get
-            {
-                return m_ClosedByX;
-            }
-        }
-
+        
         public int BoardSize
         {
             get
@@ -58,7 +49,6 @@ namespace Ex05_Othello
         private void initializeComponents()
         {
             m_IsVsComputer = false;
-            m_ClosedByX = true;
 
             m_ChosenBoardSize = 6;
             m_BoardSizeBtn = new Button();
@@ -96,7 +86,7 @@ namespace Ex05_Othello
                 m_IsVsComputer = true;
             }
 
-            m_ClosedByX = false;
+            this.DialogResult = DialogResult.OK;
             this.Close();
         }
 
