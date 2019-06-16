@@ -68,10 +68,10 @@
     <Folder Include="bin\Debug\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\CoinRed.png" />
+    <None Include="Resources\CoinBlack.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\CoinYellow.png" />
+    <None Include="Resources\CoinWhite.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

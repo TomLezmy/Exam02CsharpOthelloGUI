@@ -63,9 +63,9 @@ namespace B19_Ex05_Matan_205838618_Tom_206325409.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap CoinRed {
+        internal static System.Drawing.Bitmap CoinBlack {
             get {
-                object obj = ResourceManager.GetObject("CoinRed", resourceCulture);
+                object obj = ResourceManager.GetObject("CoinBlack", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -73,9 +73,9 @@ namespace B19_Ex05_Matan_205838618_Tom_206325409.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap CoinYellow {
+        internal static System.Drawing.Bitmap CoinWhite {
             get {
-                object obj = ResourceManager.GetObject("CoinYellow", resourceCulture);
+                object obj = ResourceManager.GetObject("CoinWhite", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

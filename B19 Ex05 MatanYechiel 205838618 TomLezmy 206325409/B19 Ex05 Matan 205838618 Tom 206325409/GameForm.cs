@@ -17,7 +17,7 @@ namespace Ex05_Othello
         public GameForm(int i_BoardSize, bool i_VsComputer)
         {
             m_GameModel = new Game();
-            m_Images = new Image[2] { B19_Ex05_Matan_205838618_Tom_206325409.Properties.Resources.CoinRed, B19_Ex05_Matan_205838618_Tom_206325409.Properties.Resources.CoinYellow };
+            m_Images = new Image[2] { B19_Ex05_Matan_205838618_Tom_206325409.Properties.Resources.CoinWhite, B19_Ex05_Matan_205838618_Tom_206325409.Properties.Resources.CoinBlack };
             m_PieceNames = new string[2] { "White's", "Black's" };
             m_GameModel.BoardSize = i_BoardSize;
             m_GameModel.InitBoard();
@@ -78,7 +78,7 @@ namespace Ex05_Othello
 
                     if (possibleMoves.Contains(currentPiece))
                     {
-                        m_BoardPieces[i, j].BackColor = Color.Green;
+                        m_BoardPieces[i, j].BackColor = Color.LimeGreen;
                         m_BoardPieces[i, j].Enabled = true;
                     }
                     else
